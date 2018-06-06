@@ -1,0 +1,20 @@
+.App {
+    justify-content: center
+}
+
+.Board {
+    display: flex;
+    justify-content: center
+}
+
+.Row {
+    background-color: bisque;
+}
+
+.Box {
+    width: 4em;
+    height: 4em;
+    border: 3px dashed grey;
+    align-content: center;
+    text-align: center;
+}
