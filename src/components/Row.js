@@ -4,14 +4,14 @@ import Box from './Box'
 export default function Row({ updateState, rowIndex, row, name }) {
     return (
         <div className="Row">
-            {row.map((value, index) => {
+            {row.map((cell, index) => {
                 return (
                     <Box
                         rowIndex={rowIndex}
                         colIndex={index}
                         updateState={updateState}
-                        value={value}
-                        key={index}
+                        cell={cell}
+                        key={`${cell.row}${cell.col}`}
                         name={name}
                     />
                 )

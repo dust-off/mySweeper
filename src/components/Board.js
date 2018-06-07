@@ -8,7 +8,7 @@ export default function Board({ updateState, board, name }) {
                 return (
                     <Row
                         row={row}
-                        key={index}
+                        key={`row${index}`}
                         rowIndex={index}
                         updateState={updateState}
                         name={name}

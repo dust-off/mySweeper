@@ -1,7 +1,7 @@
 import { unMask, finalBoard } from '../functions/logic'
 
 export const initStore = {
-    board: finalBoard(10, 50),
+    board: finalBoard(4, 5),
     players: {player1: { name: 'Genero', score: 0}}
 }
 

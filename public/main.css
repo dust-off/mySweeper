@@ -4,11 +4,17 @@
 
 .Board {
     display: flex;
-    justify-content: center
+    flex-direction: column;
+    justify-content: center;
+    min-width: 1em;
 }
 
 .Row {
     background-color: bisque;
+    display: flex;
+    flex-wrap: wrap;
+    /* width: auto; */
+    /* max-width: 5em; */
 }
 
 .Box {
