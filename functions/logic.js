@@ -1,4 +1,10 @@
 export function unMask(cords, matrix) {
+
+    revealEmpty(cords[0], cords[1], matrix)
+
+return;
+
+
     let check = [matrix[cords[0]][cords[1]]]
     let visitMap = new Map()
 
@@ -75,6 +81,32 @@ export function unMask(cords, matrix) {
 
     }
     return matrix;
+}
+
+// reveals the whole board
+const revealBoard = (board) => {
+    board.map((datarow) => {
+        datarow.map((dataitem) => {
+            dataitem.isRevealed = true;
+        });
+    });
+    
+    return board
+}
+
+/* reveal logic for empty cell */
+const revealEmpty = (x, y, board) => {
+    let { flat } = getAdjacent([x, y], board, true);
+    flat.map(value => {
+        if (!value.isRevealed && (value.isEmpty || !value.isMine)) {
+            board[value.row][value.col].isRevealed = true;
+            if (value.isEmpty) {
+                revealEmpty(value.row, value.col, board);
+            }
+        }
+    });
+    return board;
+
 }
 
 export function winCheck(cords, nextState) {
@@ -177,21 +209,6 @@ const getAdjacent = ([x, y], matrix, obj = false) => {
     return slice;
 }
 
-// const getAdjacent = (matrix) => {
-//     let flat = []
-
-//     matrix.forEach(row => {
-//         row.forEach(cell => {
-//             flat.push(cell)
-//         })
-//     })
-//     return flat;
-
-//     // return matrix.reduce((sum, part) => {
-//     //     return sum.concat(part)
-//     // }, [])
-// }
-
 const getCount = {
     all: (matrix, filter) => {
         let totalCount = 0;
@@ -274,6 +291,7 @@ const updateAdjMineCount = (matrix) => {
             let count = getCount.mines(adj)
             if (square.isMine) count--;
             square.numAdjMines = count;
+            if (count === 0) square.isEmpty = true;
         })
     })
 }
@@ -294,6 +312,12 @@ const makeSquareData = (col, row) => {
         isMine: false,
         isRevealed: false,
         numAdjMines: null,
+
+        // isMine: false,
+        // neighbour: 0,
+        // isRevealed: false,
+        isEmpty: false,
+        // isFlagged: false,
     }
 }
 

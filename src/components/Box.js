@@ -2,21 +2,21 @@ import React from 'react'
 
 const getValue = (cell) => {
 
-    if (cell.isMine) {
-        return 'X'
-    }
+    // if (cell.isMine) {
+    //     return <div>'X'</div>
+    // }
 
     console.log(cell.isRevealed)
     if (!cell.isRevealed) {
-        return cell.isFlagged ? "🚩" : '[?]';
+        return cell.isFlagged ? <div style={{ background: 'blue' }}>"🚩"</div> : <div style={{background: 'blue'}}></div>
     }
     if (cell.isMine) {
         return "💣";
     }
     if (cell.numAdjMines === 0) {
-        return '[0]';
+        return <div style={{background:'green'}}></div>;
     }
-    return cell.numAdjMines;
+    return <div style={{ background: 'green' }}>{cell.numAdjMines}</div>;
 }
 
 export default function Box({ updateState, rowIndex, colIndex, cell, name }) {
@@ -27,7 +27,7 @@ export default function Box({ updateState, rowIndex, colIndex, cell, name }) {
                                 type: "MOVE_CLICK",
                                 rowIndex, colIndex
                             })}
-        >
+            >
             <p>{getValue(cell)}</p>
         </div>
     )
