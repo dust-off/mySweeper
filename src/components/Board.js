@@ -1,26 +1,33 @@
-import React from 'react'
-import Row from './Row'
+import React from 'react';
+import Cell from './Cell';
 
-export default function Board({ updateState, board, name }) {
+export default function Board({ updateState, board }) {
     return (
-        <div>
-        <div className="Board-info">
-        Name:
-        Mines:
-        </div>
-            <div className="Board">
-                {board.map((row, index) => {
+        <div className="board">
+            {board.map((row) => {
+                return row.map((cell) => {
                     return (
-                        <Row
-                            row={row}
-                            key={`row${index}`}
-                            rowIndex={index}
-                            updateState={updateState}
-                            name={name}
-                        />
-                    )
-                })}
-            </div>
+                        <div key={cell.col * row.length + cell.row}>
+                            <Cell
+                                cellClick={() => {
+                                    updateState({
+                                        type: "MOVE_CLICK",
+                                        cell,
+                                    })
+                                }}
+                                onRightClick={(e) => {
+                                    e.preventDefault()
+                                    updateState({
+                                        type: "FLAG_CLICK",
+                                        cell,
+                                    })
+                                }}
+                                cell={cell}
+                            />
+                        {(row[row.length - 1] === cell) ? <div className="clear" /> : ""}
+                    </div>);
+            })
+        })}
         </div>
-    )
+    );
 }
