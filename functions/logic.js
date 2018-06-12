@@ -12,9 +12,9 @@ export function unmaskCascade(cords, board) {
 }
 
 export function revealBoard(board) {
-    board.map((datarow) => {
-        datarow.map((dataitem) => {
-            dataitem.isRevealed = true;
+    board.map((row) => {
+        row.map((cell) => {
+            cell.isRevealed = true;
         });
     });
     
@@ -22,20 +22,20 @@ export function revealBoard(board) {
 }
 
 export function winCheck(board) {
-    let mines = getCount.mines(board)
-    let flags = getCount.flags(board)
-
-    console.log('JSON.stringify(mines)', JSON.stringify(mines))
-    console.log('JSON.stringify(flags', JSON.stringify(flags))
-    console.log(JSON.stringify(mines) === JSON.stringify(flags))
-
-    if (JSON.stringify(mines) === JSON.stringify(flags)) {
-        return true
+    const winState = {
+        mines: getCount.mines(board),
+        flags: getCount.flags(board),
+        revealed: getCount.revealed(board),
+        done: false,
     }
-    return false;
+    
+    if (JSON.stringify(winState.mines) === JSON.stringify(winState.flags)) {
+        winState.done = true
+    }
+    return winState;
 }
 
-const getAdjacent = ([x, y], matrix, obj = false) => {
+const getAdjacent = ([x, y], matrix, all = false) => {
     const slice = [[], [], []];
     const size = matrix[0].length - 1
     const cardinal = [];
@@ -105,7 +105,7 @@ const getAdjacent = ([x, y], matrix, obj = false) => {
         cardinal.push(cell)
     }
 
-    if (obj) {
+    if (all) {
         return {
             slice,
             flat,
@@ -116,11 +116,15 @@ const getAdjacent = ([x, y], matrix, obj = false) => {
     return slice;
 }
 
+export function eachNumber(board) {
+    return getCount.eachNumber(board)
+}
+
 const getCount = {
-    all: (matrix, filter) => {
+    all: (board, filter) => {
         let totalCount = 0;
         let fCount = [];
-        matrix.forEach(row => {
+        board.forEach(row => {
             row.forEach(cell => {
                 totalCount++;
                 if (cell[`is${filter}`]) {
@@ -130,14 +134,21 @@ const getCount = {
         })
         return filter ? fCount : totalCount
     },
-    mines: (matrix) => {
-        return getCount.all(matrix, 'Mine')
+    mines: (board) => {
+        return getCount.all(board, 'Mine')
     },
-    flags: (matrix) => {
-        return getCount.all(matrix, 'Flagged')
+    flags: (board) => {
+        return getCount.all(board, 'Flagged')
     },
-    revealed: (matrix) => {
-        return getCount.all(matrix, 'Revealed')
+    revealed: (board) => {
+        return getCount.all(board, 'Revealed')
+    },
+    eachNumber: (board) => {
+        return {
+            mines: getCount.all(board, 'Mine').length,
+            flagged: getCount.all(board, 'Flagged').length,
+            revealed: getCount.all(board, 'Revealed').length,
+        }
     }
 }
 

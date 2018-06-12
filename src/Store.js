@@ -1,18 +1,10 @@
 import { winCheck, finalBoard, unmaskCascade, revealBoard } from '../functions/logic'
 
 export const initStore = {
-    board: finalBoard(10, 1),
-    players: {player1: { name: 'Genero', score: 0}},
-    gameState: null,
-}
-
-export const state = {
-    height: 8,
-    width: 8,
-    mines: 10,
     difficulty: 'beginner',
     board: finalBoard(8, 1),
     players: { player1: { name: 'Genero', score: 0 } },
+    gameState: {win: null, flags: 0, revealed: 0, mines: 1}
 };
 
 export function updateState(update) {
@@ -24,35 +16,49 @@ export function updateState(update) {
     switch (update.type) {
         case "MOVE_CLICK":
             if (isRevealed) return;
-            update.cell.isRevealed = true;
-            //nextState['board'][row][col]['isRevealed'] = true;
+            
+            nextState['board'][row][col]['isRevealed'] = true;
+
             if (update.cell.isFlagged) {
                 update.cell.isFlaseFlag = true;
                 update.cell.isFlagged = false;
             }
 
             if (isMine) {
-                nextState['gameState'] = { win: false }
+                nextState['gameState']['win'] = false
                 revealBoard(nextState['board'])
                 break;
             }
 
             const didYouWin = winCheck(nextState['board'])
-            if (didYouWin) {
+            nextState['gameState'] = {
+                win: null,
+                flags: didYouWin.flags.length,
+                mines: didYouWin.mines.length,
+                revealed: didYouWin.revealed.length,
+            }
+            if (didYouWin.done) {
                 revealBoard(nextState['board'])
-                nextState['gameState'] = { win: true }
+                nextState['gameState']['win'] = true
             } else {
                 unmaskCascade([row, col], nextState['board'])
             }
 
             break;
         case "FLAG_CLICK":
+            // TODO: currently you can plant and remove flags from revealed spots I think there was an edge case where this was important
             nextState['board'][row][col]['isFlagged'] = !isFlagged;
 
             const isGameOver = winCheck(nextState['board'])
-            if (isGameOver) {
+            nextState['gameState'] = {
+                win: null,
+                flags: isGameOver.flags.length,
+                mines: isGameOver.mines.length,
+                revealed: isGameOver.revealed.length,
+            }
+            if (isGameOver.done) {
                 revealBoard(nextState['board'])
-                nextState['gameState'] = { win: true }
+                nextState['gameState']['win'] = true
             }
 
             break;

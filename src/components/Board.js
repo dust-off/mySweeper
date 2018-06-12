@@ -22,6 +22,7 @@ export default function Board({ updateState, board }) {
                                         cell,
                                     })
                                 }}
+                                updateState={updateState}
                                 cell={cell}
                             />
                         {(row[row.length - 1] === cell) ? <div className="clear" /> : ""}

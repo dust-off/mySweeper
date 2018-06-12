@@ -8,23 +8,39 @@ const getValue = (cell) => {
         return "💣";
     }
     if (cell.numAdjMines === 0) {
-        return cell.isFalseFlagged ? "🚩" : null;
+        return cell.isFlagged ? "🚩" : null;
     }
     return cell.numAdjMines;
 }
 
-export default function Cell({ cell, cellClick, onRightClick }) {
+export default function Cell({ cell, cellClick, onRightClick, updateState }) {
     let className = "cell";
     className += cell.isRevealed ? "" : " hidden";
     className += cell.isMine ? " is-mine" : "";
-    className += cell.isFlagged || cell.isFalseFlagged ? " is-flag" : "";
+    className += cell.isFlagged ? " is-flag" : "";
+    className += cell.isRevealed && (cell.isFlagged || cell.isMine) ? " is-fail" : "";
+    className += cell.isRevealed && cell.isFlagged && cell.isMine ? " is-pass" : "";
 
     return (
         <div
             className="cell"
-            onClick={cellClick}
             className={className}
-            onContextMenu={onRightClick}>
+            onClick={cellClick}
+            onContextMenu={onRightClick}
+            // onClick={() => {
+            //     updateState({
+            //         type: "MOVE_CLICK",
+            //         cell,
+            //     })
+            // }}
+            // onContextMenu={(e) => {
+            //     e.preventDefault()
+            //     updateState({
+            //         type: "FLAG_CLICK",
+            //         cell,
+            //     })
+            // }}
+            >
 
         {getValue(cell)}
         </div>
