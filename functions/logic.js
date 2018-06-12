@@ -1,36 +1,240 @@
-export function unMask(cords, grid) {
-    let check = [cords]
-    while (check.length > 0) {
-        let next = check.shift();
-        let adjMines = 0;
+export function unMask(cords, matrix) {
 
-        [[0, -1], [0, 1], [-1, 0], [1, 0]].forEach(delta => {
-            let row = next[0] + delta[0]
-            let col = next[1] + delta[1]
+    revealEmpty(cords[0], cords[1], matrix)
 
-            if (Math.min(row, col) >= 0 && Math.max(row, col) <= grid[0].length - 1) {
-                if (grid[row][col] === null) {
-                    check.push([row, col])
-                } else if (grid[row][col] === "X") {
-                    adjMines++
-                }
+return;
+
+
+    let check = [matrix[cords[0]][cords[1]]]
+    let visitMap = new Map()
+
+    // console.log('clicked on cell', cords, matrix, JSON.stringify(check))
+
+    visitMap.set(check[0], true)
+
+    while(check.length > 0) {
+        let cell = check.shift()
+
+        if (!cell.isFlagged && !cell.isMine && cell !== null) {
+            cell.isRevealed = true;
+            if (cell.numAdjMines === null || cell.numAdjMines === 0) {
+                console.log('inside the cell.numAdjMines check', cell.row, cell. col)
+                let { cardinal } = getAdjacent([cell.row, cell.col], matrix, true)
+
+                console.log(cardinal)
+
+                // let up = matrix[cell.row - 1][cell.col]
+                // let down = matrix[cell.row + 1][cell.col]
+                // let left = matrix[cell.row][cell.col - 1]
+                // let right = matrix[cell.row][cell.col + 1]
+
+                // console.log('cardinal:', [up, down, left, right])
+
+                // cardinal.forEach(dir => {
+                //     if (dir !== null && !visitMap.get(dir)) {
+                //         visitMap.set(dir)
+                //         check.push(dir)
+                //     }
+                // })
             }
+        }
+        
+        // let slice = getAdjacent([cell.row, cell.col], matrix)
+        
+        // slice.forEach(row => {
+        //     row.forEach(value => {
+                
+        //         console.log('cell:', [cell.row, cell.col])
+        //         console.log('isFlagged', value.isFlagged, 'isRevealed', value.isRevealed, 'numAdjMines', value.numAdjMines, 'isMine', value.isMine)
+        //         if (!value.isFlagged && !value.isMine) {
+        //             value.isRevealed = true
+        //         }
+        //         // if (!value.isFlagged && !value.isRevealed && (!(value.numAdjMines > 0) || !value.isMine)) {
+        //         //     value.isRevealed = true;
+        //         //     if (!(value.numAdjMines > 0) && !visitMap.get(value)) {
+        //         //         visitMap.set(value, true)
+        //         //         check.push(value)
+        //         //     }
+        //         // }
+        //     })
+        // })
+
+
+        // if (!(cell.numAdjMines > 0)) {
+        //     let slice = getAdjacent([cell.row, cell.col], matrix)
+        //     slice.forEach(row => {
+        //         row.forEach(col => {
+        //             if (!visitMap.get(col)) {
+        //                 visitMap.set(col, true)
+                        
+        //                 if (col.numAdjMines > 0) {
+        //                     col.isRevealed = true;
+        //                 } else {
+        //                     check.push(col)
+        //                 }
+        //             }
+        //         })
+        //     })
+        // } else if (!cell.isFlagged && !cell.isMine) {
+        //     cell.isRevealed = true
+        // }
+
+    }
+    return matrix;
+}
+
+// reveals the whole board
+const revealBoard = (board) => {
+    board.map((datarow) => {
+        datarow.map((dataitem) => {
+            dataitem.isRevealed = true;
         });
-        [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(delta => {
-            let row = next[0] + delta[0]
-            let col = next[1] + delta[1]
+    });
+    
+    return board
+}
 
-            if (Math.min(row, col) >= 0 && Math.max(row, col) <= grid[0].length - 1) {
-                if (grid[row][col] === "X") {
-                    adjMines++
-                }
+/* reveal logic for empty cell */
+const revealEmpty = (x, y, board) => {
+    let { flat } = getAdjacent([x, y], board, true);
+    flat.map(value => {
+        if (!value.isRevealed && (value.isEmpty || !value.isMine)) {
+            board[value.row][value.col].isRevealed = true;
+            if (value.isEmpty) {
+                revealEmpty(value.row, value.col, board);
             }
+        }
+    });
+    return board;
+
+}
+
+export function winCheck(cords, nextState) {
+    let cell = nextState['board'][cords[0]][cords[1]]
+
+    if (cell.isMine) {
+        nextState['gameState'] = { lose: true }
+        return true
+    }
+
+    let mines = getCount.mines(nextState['board'])
+    let flags = getCount.flags(nextState['board'])
+
+    if (JSON.stringify(mines) === JSON.stringify(flags)) {
+        nextState['gameState'] = { win: true }
+        return true
+    }
+    return false;
+    console.log('flags = mines', JSON.stringify(mines) === JSON.stringify(flags))
+}
+
+const getAdjacent = ([x, y], matrix, obj = false) => {
+    const slice = [[], [], []];
+    const size = matrix[0].length - 1
+    const cardinal = [];
+    const flat = [];
+
+    // top left
+    if (x > 0 && y > 0) {
+        let cell = matrix[x - 1][y - 1];
+        slice[0][0] = cell;
+        flat.push(cell)
+    }
+
+    // top center
+    if (x > 0) {
+        let cell = (matrix[x - 1][y])
+        slice[0][1] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
+    }
+
+    // top right
+    if (x > 0 && y < size) {
+        let cell = (matrix[x - 1][y + 1]);
+        slice[0][2] = cell
+        flat.push(cell)
+    }
+
+    // down
+    if (x < size) {
+        let cell = (matrix[x + 1][y]);
+        slice[2][1] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
+    }
+
+    // left
+    if (y > 0) {
+        let cell = (matrix[x][y - 1]);;
+        slice[1][0] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
+    }
+
+    // center
+    slice[1][1] = matrix[x][y]
+
+    // right
+    if (y < size) {
+        let cell = (matrix[x][y + 1]);
+        slice[1][2] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
+    }
+
+    // bottom right
+    if (x < size && y < size) {
+        let cell = (matrix[x + 1][y + 1]);
+        slice[2][2] = cell;
+        flat.push(cell)
+    }
+
+    // bottom left
+    if (x < size && y > 0) {
+        let cell = (matrix[x + 1][y - 1]);
+        slice[2][0] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
+    }
+
+    if (obj) {
+        return {
+            slice,
+            flat,
+            cardinal
+        }
+    }
+
+    return slice;
+}
+
+const getCount = {
+    all: (matrix, filter) => {
+        let totalCount = 0;
+        let fCount = 0;
+        matrix.forEach(row => {
+            row.forEach(square => {
+                totalCount++;
+                if (square[`is${filter}`]) {
+                    fCount++;
+                }
+            })
         })
-        grid[next[0]][next[1]] = adjMines;
+        return filter ? fCount : totalCount
+    },
+    mines: (matrix) => {
+        return getCount.all(matrix, 'Mine')
+    },
+    flags: (matrix) => {
+        return getCount.all(matrix, 'Flagged')
+    },
+    revealed: (matrix) => {
+        return getCount.all(matrix, 'Revealed')
     }
 }
 
-export function shuffle(array) {    
+export function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
     // While there remain elements to shuffle...
@@ -49,28 +253,83 @@ export function shuffle(array) {
     return array;
 }
 
-const makeMatrix = (size, fill = null) => {
-    return Array.from({ length: size }, () => new Array(size).fill(fill))
-}
-
-const populateBoard = (matrix, count) => {
-    const size = matrix[0].length
-    let fakeArray = [];
+const makeMatrix = (size, contents) => {
+    // return Array.from({ length: size }, () => new Array(size).fill(contents()))
+    let matrix = []
     for (let i = 0; i < size; i++) {
+        matrix.push([])
         for (let j = 0; j < size; j++) {
-            fakeArray.push([i,j])
+            matrix[i][j] = contents ? contents(j, i) : {}
         }
     }
-    fakeArray = shuffle(fakeArray)
+    return matrix;
+}
+
+const insertMines = (matrix, count) => {
+    const size = matrix[0].length
+    let shuffleCords = [];
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            shuffleCords.push([i,j])
+        }
+    }
+    shuffleCords = shuffle(shuffleCords)
 
     for (let i = 0; i < count; i++) {
-        matrix[fakeArray[i][0]][fakeArray[i][1]] = "X"
+        matrix[shuffleCords[i][0]][shuffleCords[i][1]]['isMine'] = true
+        // matrix[shuffleCords[i][0]][shuffleCords[i][1]]['isFlagged'] = true
     }
 
     return matrix
 }
 
-export function finalBoard(size, count = 0, fill = null) {
+const updateAdjMineCount = (matrix) => {
+    let adj;
+    matrix.forEach((row, i) => {
+        row.forEach((square, j) => {
+            adj = getAdjacent([i, j], matrix)
+            let count = getCount.mines(adj)
+            if (square.isMine) count--;
+            square.numAdjMines = count;
+            if (count === 0) square.isEmpty = true;
+        })
+    })
+}
+
+export function finalBoard(size, count = 0, fill = makeSquareData) {
     let board = makeMatrix(size, fill)
-    return populateBoard(board, count)
+    insertMines(board, count)
+    updateAdjMineCount(board)
+
+    return board
+}
+
+const makeSquareData = (col, row) => {
+    return {
+        col,
+        row,
+        isFlagged: false,
+        isMine: false,
+        isRevealed: false,
+        numAdjMines: null,
+
+        // isMine: false,
+        // neighbour: 0,
+        // isRevealed: false,
+        isEmpty: false,
+        // isFlagged: false,
+    }
+}
+
+export const all = {
+    unMask,
+    winCheck,
+    getAdjacent,
+    getCount,
+    shuffle,
+    makeMatrix,
+    insertMines,
+    updateAdjMineCount,
+    finalBoard,
+    makeSquareData,
 }

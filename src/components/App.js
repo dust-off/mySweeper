@@ -2,6 +2,7 @@ import React from 'react'
 import Board from './Board'
 
 import { initStore, updateState } from '../Store'
+// console.log(initStore)
 
 export default class App extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ export default class App extends React.Component {
         this.state = initStore
         this.updateState = updateState.bind(this)
     }
+
     render() {
         return (
             <div className="App">
