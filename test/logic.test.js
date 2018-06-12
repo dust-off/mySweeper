@@ -1,1 +1,0 @@
-const logic = require('../functions/logic').all
