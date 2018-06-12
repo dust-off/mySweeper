@@ -1,8 +1,9 @@
-import { unMask, finalBoard } from '../functions/logic'
+import { unMask, winCheck, finalBoard } from '../functions/logic'
 
 export const initStore = {
-    board: finalBoard(4, 5),
-    players: {player1: { name: 'Genero', score: 0}}
+    board: finalBoard(10, 5),
+    players: {player1: { name: 'Genero', score: 0}},
+    gameState: null,
 }
 
 export function updateState(update) {
@@ -10,7 +11,10 @@ export function updateState(update) {
 
     switch (update.type) {
         case "MOVE_CLICK":
-            unMask([update.rowIndex, update.colIndex], nextState['board'])
+            let isGameOver = winCheck([update.rowIndex, update.colIndex], nextState)
+
+            if(!isGameOver) unMask([update.rowIndex, update.colIndex], nextState['board'])
+
             console.log('nextState', nextState)
             break;
         case "TEST":

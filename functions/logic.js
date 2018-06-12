@@ -2,30 +2,56 @@ export function unMask(cords, matrix) {
     let check = [matrix[cords[0]][cords[1]]]
     let visitMap = new Map()
 
+    // console.log('clicked on cell', cords, matrix, JSON.stringify(check))
+
     visitMap.set(check[0], true)
 
     while(check.length > 0) {
         let cell = check.shift()
-        
-        let slice = getAdjacent([cell.row, cell.col], matrix)
-        
-        slice.forEach(row => {
-            row.forEach(value => {
-                
-                console.log('cell:', [cell.row, cell.col])
-                console.log('isFlagged', value.isFlagged, 'isRevealed', value.isRevealed, 'numAdjMines', value.numAdjMines, 'isMine', value.isMine)
-                if (!value.isFlagged && !value.isMine) {
-                    value.isRevealed = true
-                }
-                // if (!value.isFlagged && !value.isRevealed && (!(value.numAdjMines > 0) || !value.isMine)) {
-                //     value.isRevealed = true;
-                //     if (!(value.numAdjMines > 0) && !visitMap.get(value)) {
-                //         visitMap.set(value, true)
-                //         check.push(value)
+
+        if (!cell.isFlagged && !cell.isMine && cell !== null) {
+            cell.isRevealed = true;
+            if (cell.numAdjMines === null || cell.numAdjMines === 0) {
+                console.log('inside the cell.numAdjMines check', cell.row, cell. col)
+                let { cardinal } = getAdjacent([cell.row, cell.col], matrix, true)
+
+                console.log(cardinal)
+
+                // let up = matrix[cell.row - 1][cell.col]
+                // let down = matrix[cell.row + 1][cell.col]
+                // let left = matrix[cell.row][cell.col - 1]
+                // let right = matrix[cell.row][cell.col + 1]
+
+                // console.log('cardinal:', [up, down, left, right])
+
+                // cardinal.forEach(dir => {
+                //     if (dir !== null && !visitMap.get(dir)) {
+                //         visitMap.set(dir)
+                //         check.push(dir)
                 //     }
-                // }
-            })
-        })
+                // })
+            }
+        }
+        
+        // let slice = getAdjacent([cell.row, cell.col], matrix)
+        
+        // slice.forEach(row => {
+        //     row.forEach(value => {
+                
+        //         console.log('cell:', [cell.row, cell.col])
+        //         console.log('isFlagged', value.isFlagged, 'isRevealed', value.isRevealed, 'numAdjMines', value.numAdjMines, 'isMine', value.isMine)
+        //         if (!value.isFlagged && !value.isMine) {
+        //             value.isRevealed = true
+        //         }
+        //         // if (!value.isFlagged && !value.isRevealed && (!(value.numAdjMines > 0) || !value.isMine)) {
+        //         //     value.isRevealed = true;
+        //         //     if (!(value.numAdjMines > 0) && !visitMap.get(value)) {
+        //         //         visitMap.set(value, true)
+        //         //         check.push(value)
+        //         //     }
+        //         // }
+        //     })
+        // })
 
 
         // if (!(cell.numAdjMines > 0)) {
@@ -51,33 +77,67 @@ export function unMask(cords, matrix) {
     return matrix;
 }
 
-const getAdjacent = ([x, y], matrix) => {
+export function winCheck(cords, nextState) {
+    let cell = nextState['board'][cords[0]][cords[1]]
+
+    if (cell.isMine) {
+        nextState['gameState'] = { lose: true }
+        return true
+    }
+
+    let mines = getCount.mines(nextState['board'])
+    let flags = getCount.flags(nextState['board'])
+
+    if (JSON.stringify(mines) === JSON.stringify(flags)) {
+        nextState['gameState'] = { win: true }
+        return true
+    }
+    return false;
+    console.log('flags = mines', JSON.stringify(mines) === JSON.stringify(flags))
+}
+
+const getAdjacent = ([x, y], matrix, obj = false) => {
     const slice = [[], [], []];
     const size = matrix[0].length - 1
+    const cardinal = [];
+    const flat = [];
 
     // top left
     if (x > 0 && y > 0) {
-        slice[0][0] = (matrix[x - 1][y - 1]);
+        let cell = matrix[x - 1][y - 1];
+        slice[0][0] = cell;
+        flat.push(cell)
     }
 
     // top center
     if (x > 0) {
-        slice[0][1] = (matrix[x - 1][y]);
+        let cell = (matrix[x - 1][y])
+        slice[0][1] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
     }
 
     // top right
     if (x > 0 && y < size) {
-        slice[0][2] = (matrix[x - 1][y + 1]);
+        let cell = (matrix[x - 1][y + 1]);
+        slice[0][2] = cell
+        flat.push(cell)
     }
 
     // down
     if (x < size) {
-        slice[2][1] = (matrix[x + 1][y]);
+        let cell = (matrix[x + 1][y]);
+        slice[2][1] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
     }
 
     // left
     if (y > 0) {
-        slice[1][0] = (matrix[x][y - 1]);
+        let cell = (matrix[x][y - 1]);;
+        slice[1][0] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
     }
 
     // center
@@ -85,38 +145,52 @@ const getAdjacent = ([x, y], matrix) => {
 
     // right
     if (y < size) {
-        slice[1][2] = (matrix[x][y + 1]);
+        let cell = (matrix[x][y + 1]);
+        slice[1][2] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
     }
 
     // bottom right
     if (x < size && y < size) {
-        slice[2][2] = (matrix[x + 1][y + 1]);
+        let cell = (matrix[x + 1][y + 1]);
+        slice[2][2] = cell;
+        flat.push(cell)
     }
 
     // bottom left
     if (x < size && y > 0) {
-        slice[2][0] = (matrix[x + 1][y - 1]);
+        let cell = (matrix[x + 1][y - 1]);
+        slice[2][0] = cell;
+        flat.push(cell)
+        cardinal.push(cell)
     }
 
-    slice
+    if (obj) {
+        return {
+            slice,
+            flat,
+            cardinal
+        }
+    }
 
     return slice;
 }
 
-const flatten = (matrix) => {
-    let flat = []
+// const getAdjacent = (matrix) => {
+//     let flat = []
 
-    matrix.forEach(row => {
-        row.forEach(cell => {
-            flat.push(cell)
-        })
-    })
-    return flat;
+//     matrix.forEach(row => {
+//         row.forEach(cell => {
+//             flat.push(cell)
+//         })
+//     })
+//     return flat;
 
-    // return matrix.reduce((sum, part) => {
-    //     return sum.concat(part)
-    // }, [])
-}
+//     // return matrix.reduce((sum, part) => {
+//     //     return sum.concat(part)
+//     // }, [])
+// }
 
 const getCount = {
     all: (matrix, filter) => {
@@ -168,7 +242,7 @@ const makeMatrix = (size, contents) => {
     for (let i = 0; i < size; i++) {
         matrix.push([])
         for (let j = 0; j < size; j++) {
-            matrix[i][j] = contents ? contents(i, j) : {}
+            matrix[i][j] = contents ? contents(j, i) : {}
         }
     }
     return matrix;
@@ -186,7 +260,7 @@ const insertMines = (matrix, count) => {
 
     for (let i = 0; i < count; i++) {
         matrix[shuffleCords[i][0]][shuffleCords[i][1]]['isMine'] = true
-        matrix[shuffleCords[i][0]][shuffleCords[i][1]]['isFlagged'] = true
+        // matrix[shuffleCords[i][0]][shuffleCords[i][1]]['isFlagged'] = true
     }
 
     return matrix
@@ -221,4 +295,17 @@ const makeSquareData = (col, row) => {
         isRevealed: false,
         numAdjMines: null,
     }
+}
+
+export const all = {
+    unMask,
+    winCheck,
+    getAdjacent,
+    getCount,
+    shuffle,
+    makeMatrix,
+    insertMines,
+    updateAdjMineCount,
+    finalBoard,
+    makeSquareData,
 }
