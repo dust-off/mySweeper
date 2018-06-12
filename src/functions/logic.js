@@ -7,6 +7,7 @@ export function unmaskCascade(cords, board) {
                 unmaskCascade([cell.row, cell.col], board);
             }
         }
+        return cell;
     });
     return board;
 }
@@ -15,7 +16,9 @@ export function revealBoard(board) {
     board.map((row) => {
         row.map((cell) => {
             cell.isRevealed = true;
+            return cell;
         });
+        return row;
     });
     
     return board

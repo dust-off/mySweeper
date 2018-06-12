@@ -23,7 +23,6 @@ export default function Cell({ cell, cellClick, onRightClick, updateState }) {
 
     return (
         <div
-            className="cell"
             className={className}
             onClick={cellClick}
             onContextMenu={onRightClick}

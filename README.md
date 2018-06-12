@@ -1,2 +1,2 @@
 # mySweeper
-A better Mine Sweeper clone
+Mine Sweeper designed for me!
