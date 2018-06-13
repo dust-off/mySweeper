@@ -4,7 +4,9 @@ export const initStore = {
     difficulty: 'beginner',
     board: finalBoard(8, 12),
     players: { player1: { name: 'Genero', score: 0 } },
-    gameState: {win: null, flags: 0, revealed: 0, mines: 1}
+    gameState: {win: null, flags: 0, revealed: 0, mines: 1},
+    size: 8,
+    mines: 12,
 };
 
 export function updateState(update) {
@@ -14,6 +16,17 @@ export function updateState(update) {
     const { row, col, isFlagged, isMine, isRevealed } = cell
 
     switch (update.type) {
+        case "RESIZE":
+            console.log('RESIZE', update)
+            const { size, mines } = nextState;
+            nextState['board'] = finalBoard(size, mines)
+            nextState['gameState'] = {win: null, flags: 0, revealed: 0, mines}
+            break;
+        case 'SELECT_SIZE':
+            console.log('SELECT_SIZE', update)
+            nextState.size = update.size;
+            nextState.mines = update.mines;
+            break;
         case "MOVE_CLICK":
             if (isRevealed) return;
             

@@ -1,3 +1,12 @@
+/* body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: #e53935;
+    background: linear-gradient(to left, #e53935, #e35d5b);
+} */
+
 *,
 *:before,
 *:after {
@@ -6,7 +15,7 @@
 body {
   margin: 20px;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Rubik One', sans-serif;
   background: #f4f4f4;
 }
 
@@ -29,6 +38,7 @@ body {
   min-height: 100px;
   border-radius: 7px;
   width: 100%;
+  background: linear-gradient(to right, #d4469f, #d44658);
 }
 
 .info {
@@ -37,7 +47,6 @@ body {
 }
 
 .board {
-  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
 }
