@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Board from './Board';
-import { initStore, updateState } from '../Store'
+import { initStore, updateState } from '../Store';
 import './App.css';
 
 export default class App extends React.Component {
@@ -12,9 +12,13 @@ export default class App extends React.Component {
   }
 
   getClassOfInfo() {
-    let className = "game-info";
-    className += this.state.gameState.win === true ? ' is-pass' : '';
-    className += this.state.gameState.win === false ? ' is-fail' : '';
+    let className = "game-info"
+
+    if (this.state.gameState.win) {
+      className += ' is-pass'
+    } else if (this.state.gameState.win === false) {
+      className += ' is-fail'
+    }
 
     return className;
   }
@@ -24,8 +28,12 @@ export default class App extends React.Component {
       <div className="game">
 
         <div className={this.getClassOfInfo()}>
-          <span className="info">mines: {this.state.gameState.mines}</span>
-          <span className="info">flags: {this.state.gameState.flags}</span>
+          <span><h1>mySweeper</h1></span>
+          <div className="info">mines: {this.state.gameState.mines}</div>
+          <div className="info">flags: {this.state.gameState.flags}</div>
+          <br/>
+          <input id="input_size" type="number" inputmode="numeric" placeholder="size"></input>
+          <input id="input_mines" type="number" inputmode="numeric" placeholder="mines"></input>
         </div>
 
         <Board
