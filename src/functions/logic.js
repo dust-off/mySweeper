@@ -12,10 +12,13 @@ export function unmaskCascade(cords, board) {
     return board;
 }
 
-export function revealBoard(board) {
+export function revealBoard(board, win) {
     board.map((row) => {
         row.map((cell) => {
             cell.isRevealed = true;
+            if (win) {
+                if (cell.isMine) cell.isFlagged = true;
+            }
             return cell;
         });
         return row;

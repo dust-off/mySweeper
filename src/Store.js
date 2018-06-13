@@ -29,6 +29,7 @@ export function updateState(update) {
             break;
         case "MOVE_CLICK":
             if (isRevealed) return;
+            if (nextState['gameState']['win'] !== null) return;
             
             nextState['board'][row][col]['isRevealed'] = true;
 
@@ -58,15 +59,16 @@ export function updateState(update) {
 
                 const newCount = getCount.revealed(nextState['board']);
                 const size = nextState['board'].length * nextState['board'].length
-                console.log(newCount.length, didYouWin.mines.length, size)
+
                 if (newCount.length + didYouWin.mines.length === size) {
-                    console.log('maybe a win')                    
+                    revealBoard(nextState['board'], true)
+                    nextState['gameState']['win'] = true                 
                 }
             }
 
             break;
         case "FLAG_CLICK":
-            // TODO: currently you can plant and remove flags from revealed spots I think there was an edge case where this was important
+            if (nextState['gameState']['win'] !== null) return;
             nextState['board'][row][col]['isFlagged'] = !isFlagged;
 
             const isGameOver = winCheck(nextState['board'])

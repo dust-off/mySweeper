@@ -79,7 +79,8 @@ body {
 }
 
 .is-fail {
-  background: red;
+  background: linear-gradient(147deg, #d4469f, #fc543c);
+  color: black;
 }
 .is-pass {
   background: linear-gradient(to right, #04DB81, #04cadb);
