@@ -1,11 +1,9 @@
 import React from 'react';
-import './App.css';
 
-import { initStore, updateState } from '../Store';
+import { initStore, updateState } from '../Utils/Store';
 
 import Board from './Board';
-import { Flowing } from './bits/Flowing'
-import { StyledButton } from './bits/StyledButton'
+import { Flowing, StyledButton } from './StyledComponents'
 
 export default class App extends React.Component {
   constructor(props) {

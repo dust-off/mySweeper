@@ -1,4 +1,4 @@
-import { winCheck, finalBoard, unmaskCascade, revealBoard, getCount } from './functions/logic'
+import { winCheck, finalBoard, unmaskCascade, revealBoard, getCount } from './logic'
 
 export const initStore = {
     difficulty: 'beginner',
