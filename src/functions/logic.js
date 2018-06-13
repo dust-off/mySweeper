@@ -155,6 +155,9 @@ const getCount = {
     }
 }
 
+const _getCount = getCount;
+export { _getCount as getCount };
+
 export function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 

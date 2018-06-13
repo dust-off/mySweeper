@@ -26,19 +26,6 @@ export default function Cell({ cell, cellClick, onRightClick, updateState }) {
             className={className}
             onClick={cellClick}
             onContextMenu={onRightClick}
-            // onClick={() => {
-            //     updateState({
-            //         type: "MOVE_CLICK",
-            //         cell,
-            //     })
-            // }}
-            // onContextMenu={(e) => {
-            //     e.preventDefault()
-            //     updateState({
-            //         type: "FLAG_CLICK",
-            //         cell,
-            //     })
-            // }}
             >
 
         {getValue(cell)}

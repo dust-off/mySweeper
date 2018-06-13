@@ -1,8 +1,8 @@
-import { winCheck, finalBoard, unmaskCascade, revealBoard } from './functions/logic'
+import { winCheck, finalBoard, unmaskCascade, revealBoard, getCount } from './functions/logic'
 
 export const initStore = {
     difficulty: 'beginner',
-    board: finalBoard(8, 1),
+    board: finalBoard(8, 12),
     players: { player1: { name: 'Genero', score: 0 } },
     gameState: {win: null, flags: 0, revealed: 0, mines: 1}
 };
@@ -42,6 +42,13 @@ export function updateState(update) {
                 nextState['gameState']['win'] = true
             } else {
                 unmaskCascade([row, col], nextState['board'])
+
+                const newCount = getCount.revealed(nextState['board']);
+                const size = nextState['board'].length * nextState['board'].length
+                console.log(newCount.length, didYouWin.mines.length, size)
+                if (newCount.length + didYouWin.mines.length === size) {
+                    console.log('maybe a win')                    
+                }
             }
 
             break;
