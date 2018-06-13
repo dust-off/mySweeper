@@ -75,7 +75,7 @@ export default class App extends React.Component {
         <Flowing classTitle={this.getClassOfInfo()} >
           <div style={{ position: 'absolute', top: '50px', left: '50%' }}>
             <StyledButton> 
-              <div class="button" onClick={this.reSize}>
+              <div className="button" onClick={this.reSize}>
                 {this.state.gameState.win === null ? 'mySweeper' : 'New Game'}
               </div>
             </StyledButton>
