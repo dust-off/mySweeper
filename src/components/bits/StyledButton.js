@@ -1,26 +1,16 @@
-import React from 'react';
 import styled from 'styled-components'
 
-const Sbutton = styled.div`
+export const StyledButton = styled.div`
 @import "https://fonts.googleapis.com/css?family=Rubik+One";
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background: #e53935;
-  background: -webkit-linear-gradient(right, #e53935, #e35d5b);
-  background: linear-gradient(to left, #e53935, #e35d5b);
-}
-
 .button::before, .button::after {
   position: absolute;
   content: '';
-  -webkit-transition: all .5s;
-  transition: all .5s;
+  -webkit-transition: all .2s;
+  transition: all .2s;
 }
 
 .button {
+  width: 300px;
   display: inline-block;
   padding: 20px 40px;
   color: white;
@@ -32,9 +22,9 @@ body, html {
   vertical-align: middle;
   font-family: 'Rubik One', sans-serif;
   text-decoration: none;
-  font-size: 4vw;
-  -webkit-transition: all .5s;
-  transition: all .5s;
+  font-size: 28px;
+  -webkit-transition: all .2s;
+  transition: all .2s;
   background-color: #3498db;
 }
 .button::before {
@@ -71,11 +61,3 @@ body, html {
 }
 
 `
-
-export default function StyledButton() {
-    return (
-        <Sbutton>
-            <a class="button" href="#">Press me!</a>
-        </Sbutton>
-    )
-}
