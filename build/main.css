@@ -1,3 +1,12 @@
+/* body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: #e53935;
+    background: linear-gradient(to left, #e53935, #e35d5b);
+} */
+
 *,
 *:before,
 *:after {
@@ -6,7 +15,7 @@
 body {
   margin: 20px;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Rubik One', sans-serif;
   background: #f4f4f4;
 }
 
@@ -16,27 +25,30 @@ body {
 }
 
 .game {
-  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .game-info {
   margin-bottom: 20px;
-  background: #19a0d9;
+  background: #d4469f;
   padding: 7px;
   text-align: center;
   color: #fff;
   min-height: 100px;
   border-radius: 7px;
+  width: 100%;
+  background: linear-gradient(to right, #d4469f, #d44658);
 }
 
 .info {
-  display: block;
-  margin-top: 15px;
+  display: inline-block;
+  padding: 1rem;
 }
 
 .board {
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .cell {
@@ -71,4 +83,8 @@ body {
 }
 .is-pass {
   background: green;
+}
+
+input {
+  margin: 1em;
 }
